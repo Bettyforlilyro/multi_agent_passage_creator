@@ -1,31 +1,37 @@
 """FastAPI 主应用入口"""
 
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.config import settings
-from app.database import database
-from app.routers import health_router
+from app.api import all_routers
 from app.common.exceptions import BusinessException, ErrorCode
+from app.core.lifespan import lifespan
 
 
-# 创建 FastAPI 应用
-app = FastAPI(
-    title="AI 爆款文章创作器",
-    description="基于多智能体编排的 AI 文章创作平台",
-    version="0.0.1",
-)
+def create_app() -> FastAPI:
+    """创建 FastAPI 应用"""
+    fastapi_app = FastAPI(
+        title="AI 爆款文章创作器",
+        description="基于多智能体编排的 AI 文章创作平台",
+        version="0.0.1",
+        lifespan=lifespan,
+    )
+    # 注册路由
+    for router in all_routers:
+        fastapi_app.include_router(router, prefix="/api")
+    # CORS 配置
+    fastapi_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],  # 前端开发服务器地址
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    return fastapi_app
 
-# CORS 配置
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # 前端开发服务器地址
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+app = create_app()
 
 
 # 全局异常处理
@@ -56,5 +62,22 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# 注册路由
-app.include_router(health_router, prefix="/api")
+@app.get("/")
+async def root():
+    """根路径"""
+    return {
+        "message": "AI 爆款文章创作器 - Python 后端",
+        "version": "0.0.1",
+        "docs": "/docs"
+    }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    from app.core.config import settings
+    uvicorn.run(
+        app,
+        host=settings.server_host,
+        port=settings.server_port,
+        reload=False,
+    )

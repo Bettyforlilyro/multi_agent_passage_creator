@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # 获取项目根目录（python-backend 目录）
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 ENV_FILE = BASE_DIR / ".env"
 
 
@@ -22,9 +22,10 @@ class Settings(BaseSettings):
 
     # Redis 配置
     redis_host: str
-    redis_port: int = 6379
+    redis_port: int
     redis_db: int = 0
-    redis_password: str = ""
+    redis_user: str
+    redis_password: str
 
     # Session 配置
     session_secret_key: str
@@ -32,6 +33,9 @@ class Settings(BaseSettings):
 
     # 密码加密盐值
     password_salt: str
+
+    # 其他配置
+    debug: bool = False
 
     model_config = SettingsConfigDict(
         env_file=str(ENV_FILE),
@@ -43,13 +47,13 @@ class Settings(BaseSettings):
     @property
     def database_url(self) -> str:
         """获取数据库连接 URL"""
-        return f"mysql+pymysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}?charset=utf8mb4"
+        return f"mysql+aiomysql://{self.db_user}:{self.db_password}@{self.db_host}:{self.db_port}/{self.db_name}?charset=utf8mb4"
 
     @property
     def redis_url(self) -> str:
         """获取 Redis 连接 URL"""
         if self.redis_password:
-            return f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}/{self.redis_db}"
+            return f"redis://{self.redis_user}:{self.redis_password}@{self.redis_host}:{self.redis_port}/{self.redis_db}"
         return f"redis://{self.redis_host}:{self.redis_port}/{self.redis_db}"
 
 
