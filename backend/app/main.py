@@ -1,11 +1,10 @@
 """FastAPI 主应用入口"""
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
 from app.api import all_routers
-from app.common.exceptions import BusinessException, ErrorCode
+from app.common.exceptions import BusinessException, business_exception_handler, global_exception_handler
 from app.core.lifespan import lifespan
 
 
@@ -17,9 +16,6 @@ def create_app() -> FastAPI:
         version="0.0.1",
         lifespan=lifespan,
     )
-    # 注册路由
-    for router in all_routers:
-        fastapi_app.include_router(router, prefix="/api")
     # CORS 配置
     fastapi_app.add_middleware(
         CORSMiddleware,
@@ -28,38 +24,16 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    # 注册路由
+    for router in all_routers:
+        fastapi_app.include_router(router, prefix="/api")
+    # 注册全局异常处理
+    fastapi_app.add_exception_handler(BusinessException, business_exception_handler)
+    fastapi_app.add_exception_handler(Exception, global_exception_handler)
     return fastapi_app
 
 
 app = create_app()
-
-
-# 全局异常处理
-@app.exception_handler(BusinessException)
-async def business_exception_handler(request: Request, exc: BusinessException):
-    """业务异常处理"""
-    return JSONResponse(
-        status_code=200,
-        content={
-            "code": exc.error_code.code,
-            "data": None,
-            "message": exc.message
-        }
-    )
-
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    """全局异常处理"""
-    print(f"未处理的异常: {exc}")
-    return JSONResponse(
-        status_code=200,
-        content={
-            "code": ErrorCode.SYSTEM_ERROR.code,
-            "data": None,
-            "message": f"系统内部异常: {str(exc)}"
-        }
-    )
 
 
 @app.get("/")

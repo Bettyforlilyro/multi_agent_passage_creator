@@ -1,6 +1,9 @@
 from enum import Enum
 from typing import Optional
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
 
 class ErrorCode(Enum):
     """错误码枚举"""
@@ -45,3 +48,29 @@ def throw_if_not(condition: bool, error_code: ErrorCode, message: Optional[str] 
     """条件为假时抛出异常"""
     if not condition:
         raise BusinessException(error_code, message)
+
+
+# 全局异常处理
+async def business_exception_handler(request: Request, exc: BusinessException):
+    """业务异常处理"""
+    return JSONResponse(
+        status_code=200,
+        content={
+            "code": exc.error_code.code,
+            "data": None,
+            "message": exc.message
+        }
+    )
+
+
+async def global_exception_handler(request: Request, exc: Exception):
+    """全局异常处理"""
+    print(f"未处理的异常: {exc}")
+    return JSONResponse(
+        status_code=200,
+        content={
+            "code": ErrorCode.SYSTEM_ERROR.code,
+            "data": None,
+            "message": f"系统内部异常: {str(exc)}"
+        }
+    )

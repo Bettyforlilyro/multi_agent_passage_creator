@@ -6,6 +6,7 @@ backend/.env
 .python-version
 .venv/
 venv/
+.idea/
 *.egg-info/
 
 packages/
