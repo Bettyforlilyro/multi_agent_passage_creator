@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.dependencies import get_db, get_redis
-from app.models import User
+from app.models.user import User
 from app.schemas import UserVO
 
 router = APIRouter(prefix="/users", tags=["用户"])

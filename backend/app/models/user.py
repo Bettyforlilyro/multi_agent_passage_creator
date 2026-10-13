@@ -1,14 +1,12 @@
 """用户 ORM 模型"""
 
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, BigInteger, Integer, String, DateTime, SmallInteger
 from sqlalchemy.sql import func
+from . import Base
 
 
-class User(DeclarativeBase):
+class User(Base):
     """用户表"""
-
-    __tablename__ = "user"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True, comment="id")
     user_account = Column("user_account", String(256), nullable=False, unique=True, comment="账号")
