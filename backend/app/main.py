@@ -18,7 +18,7 @@ def create_app() -> FastAPI:
     )
     # CORS 配置
     fastapi_app.add_middleware(
-        CORSMiddleware,
+        CORSMiddleware,     # type: ignore
         allow_origins=["http://localhost:5173"],  # 前端开发服务器地址
         allow_credentials=True,
         allow_methods=["*"],
@@ -28,7 +28,7 @@ def create_app() -> FastAPI:
     for router in all_routers:
         fastapi_app.include_router(router, prefix="/api")
     # 注册全局异常处理
-    fastapi_app.add_exception_handler(BusinessException, business_exception_handler)
+    fastapi_app.add_exception_handler(BusinessException, business_exception_handler)    # type: ignore
     fastapi_app.add_exception_handler(Exception, global_exception_handler)
     return fastapi_app
 
