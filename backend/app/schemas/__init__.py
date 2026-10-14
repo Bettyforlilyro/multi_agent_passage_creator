@@ -1,5 +1,5 @@
 from .base import BaseResponse, PageRequest, DeleteRequest
-from .user_response import (
+from .user import (
     UserVO,
     UserLoginRequest,
     UserUpdateRequest,
