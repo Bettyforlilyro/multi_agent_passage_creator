@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.common.constants import UserConstant
 from app.common.exceptions import throw_if, ErrorCode
-from app.models.user import User
+from app.models import User
 from app.schemas import UserRegisterRequest, UserLoginRequest, LoginUserVO
 from app.utils import encrypt_password
 

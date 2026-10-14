@@ -6,7 +6,7 @@ from sqlalchemy import BigInteger, Integer, String, DateTime, SmallInteger
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.sql import func
 
-from . import Base
+from .base import Base
 
 
 class User(Base):
