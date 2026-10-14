@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     # Session 配置
     session_secret_key: str
-    session_max_age: int = 2592000  # 30 天
+    session_max_age: int = 259200  # 3天
 
     # 密码加密盐值
     password_salt: str

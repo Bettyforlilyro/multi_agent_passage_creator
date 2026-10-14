@@ -10,15 +10,15 @@ class UserRegisterRequest(BaseModel):
     """用户注册请求"""
 
     user_account: str = Field(..., min_length=4, max_length=256, alias="userAccount", description="账号")
-    user_password: str = Field(..., min_length=8, max_length=512, alias="userPassword", description="密码")
-    check_password: str = Field(..., min_length=8, max_length=512, alias="checkPassword", description="确认密码")
+    user_password: str = Field(..., min_length=6, max_length=512, alias="userPassword", description="密码")
+    check_password: str = Field(..., min_length=6, max_length=512, alias="checkPassword", description="确认密码")
 
 
 class UserLoginRequest(BaseModel):
     """用户登录请求"""
 
     user_account: str = Field(..., min_length=4, max_length=256, alias="userAccount", description="账号")
-    user_password: str = Field(..., min_length=8, max_length=512, alias="userPassword", description="密码")
+    user_password: str = Field(..., min_length=6, max_length=512, alias="userPassword", description="密码")
 
 
 class UserAddRequest(BaseModel):
