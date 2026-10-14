@@ -1,4 +1,4 @@
-from .user_role import UserConstant
+from .user_constant import UserConstant
 
 
 __all__ = [
