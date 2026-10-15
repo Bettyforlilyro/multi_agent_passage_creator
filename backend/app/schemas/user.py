@@ -1,7 +1,8 @@
 """用户相关请求/响应模型"""
 
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator
+
+from pydantic import BaseModel, Field
 
 from .base import PageRequest
 
@@ -9,7 +10,7 @@ from .base import PageRequest
 class UserRegisterRequest(BaseModel):
     """用户注册请求"""
 
-    user_account: str = Field(..., min_length=4, max_length=256, alias="userAccount", description="账号")
+    user_account: str = Field(..., min_length=3, max_length=256, alias="userAccount", description="账号")
     user_password: str = Field(..., min_length=6, max_length=512, alias="userPassword", description="密码")
     check_password: str = Field(..., min_length=6, max_length=512, alias="checkPassword", description="确认密码")
 
@@ -17,7 +18,7 @@ class UserRegisterRequest(BaseModel):
 class UserLoginRequest(BaseModel):
     """用户登录请求"""
 
-    user_account: str = Field(..., min_length=4, max_length=256, alias="userAccount", description="账号")
+    user_account: str = Field(..., min_length=3, max_length=256, alias="userAccount", description="账号")
     user_password: str = Field(..., min_length=6, max_length=512, alias="userPassword", description="密码")
 
 
